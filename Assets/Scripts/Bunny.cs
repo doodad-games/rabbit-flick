@@ -7,7 +7,7 @@ public class Bunny : MonoBehaviour, IPointerClickHandler
 {
     const float CARROT_DISTANCE_THRESHOLD_SQ = 0.001f;
     const float EAT_DURATION = 2f;
-
+    [SerializeField] int health = 1;
 
     public static readonly HashSet<Bunny> All = new();
 
@@ -41,7 +41,7 @@ public class Bunny : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Destroy(gameObject);
+        if (health--<=0) Destroy(gameObject);
     }
 
     void FindTargetCarrot()
