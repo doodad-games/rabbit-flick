@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 public class Bunny : MonoBehaviour, IPointerClickHandler
@@ -8,6 +9,8 @@ public class Bunny : MonoBehaviour, IPointerClickHandler
     const float CARROT_DISTANCE_THRESHOLD_SQ = 0.001f;
     const float EAT_DURATION = 2f;
     [SerializeField] int health = 1;
+    [SerializeField] int lowHealth = 1;
+    [SerializeField] UnityEvent LowHealthEvent;
 
     public static readonly HashSet<Bunny> All = new();
 
@@ -41,7 +44,15 @@ public class Bunny : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (health--<=0) Destroy(gameObject);
+        health--;
+        if (health<=0)
+        {
+            Destroy(gameObject);
+        }
+        else if (health <= lowHealth)
+        {
+            LowHealthEvent?.Invoke();
+        }
     }
 
     void FindTargetCarrot()
@@ -63,6 +74,10 @@ public class Bunny : MonoBehaviour, IPointerClickHandler
 
         if (_movement != null)
             _movement.Target = _targetCarrot?.transform;
+
+        if (_movement != null)
+            if (_targetCarrot is not null)
+                transform.LookAt(_targetCarrot.transform.position);
     }
 
     void TryToEatCarrot()
