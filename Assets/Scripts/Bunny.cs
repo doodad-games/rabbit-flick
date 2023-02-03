@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -7,15 +8,24 @@ public class Bunny : MonoBehaviour, IPointerClickHandler
     const float CARROT_DISTANCE_THRESHOLD_SQ = 0.001f;
     const float EAT_DURATION = 2f;
 
+
+    public static readonly HashSet<Bunny> All = new();
+
+
     Movement _movement;
     Carrot _targetCarrot;
     bool _isEating;
 
     public void OnEnable()
     {
+        All.Add(this);
+
         if (_movement == null)
             _movement = GetComponent<Movement>();
     }
+
+    public void OnDisable() =>
+        All.Remove(this);
 
     public void Update()
     {

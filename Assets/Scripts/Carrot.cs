@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Carrot : MonoBehaviour
 {
-    public static HashSet<Carrot> All = new();
+    public static readonly HashSet<Carrot> All = new();
 
     public void OnEnable() =>
         All.Add(this);

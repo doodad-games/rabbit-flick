@@ -12,6 +12,12 @@ public class BunnySpawnZone : MonoBehaviour
         public GameObject BunnyPrefab;
     }
 
+
+    public static BunnySpawnZone I;
+
+
+    public bool IsSpawningInProgress { get; private set; }
+
     Vector3 _boundsBottomLeft;
     float _boundsHeight;
 
@@ -23,23 +29,11 @@ public class BunnySpawnZone : MonoBehaviour
         _boundsHeight = bounds.size.z;
     }
 
-    public void Start()
-    {
-        var bunnyRegularPrefab = Resources.Load<GameObject>(Constants.Resources.BUNNY_REGULAR_PREFAB);
+    public void OnEnable() =>
+        I = this;
 
-        var dummySpawnInstructions = new[] {
-            new SpawnInstruction { SpawnTime = 0.5f, BunnyPrefab = bunnyRegularPrefab },
-            new SpawnInstruction { SpawnTime = 1f, BunnyPrefab = bunnyRegularPrefab },
-            new SpawnInstruction { SpawnTime = 1.5f, BunnyPrefab = bunnyRegularPrefab },
-            new SpawnInstruction { SpawnTime = 2f, BunnyPrefab = bunnyRegularPrefab },
-            new SpawnInstruction { SpawnTime = 2.5f, BunnyPrefab = bunnyRegularPrefab },
-            new SpawnInstruction { SpawnTime = 3f, BunnyPrefab = bunnyRegularPrefab },
-            new SpawnInstruction { SpawnTime = 3.5f, BunnyPrefab = bunnyRegularPrefab },
-            new SpawnInstruction { SpawnTime = 4f, BunnyPrefab = bunnyRegularPrefab },
-            new SpawnInstruction { SpawnTime = 4.5f, BunnyPrefab = bunnyRegularPrefab },
-        };
-        Spawn(dummySpawnInstructions);
-    }
+    public void OnDisable() =>
+        I = null;
 
     public void Spawn(IList<SpawnInstruction> spawnInstructions)
     {
@@ -60,6 +54,7 @@ public class BunnySpawnZone : MonoBehaviour
         IEnumerator SpawnCoroutine()
         {
             var curTime = 0f;
+            IsSpawningInProgress = true;
 
             foreach (var spawnInstruction in spawnInstructions)
             {
@@ -70,6 +65,8 @@ public class BunnySpawnZone : MonoBehaviour
 
                 ActuallySpawn(spawnInstruction.BunnyPrefab);
             }
+
+            IsSpawningInProgress = false;
         }
     }
 
