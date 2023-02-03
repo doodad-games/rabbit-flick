@@ -7,13 +7,16 @@ using UnityEngine.EventSystems;
 public class Bunny : MonoBehaviour, IPointerClickHandler
 {
     const float CARROT_DISTANCE_THRESHOLD_SQ = 0.001f;
+    const float RANDOM_CARROT_CHANCE = 0.5f;
     const float EAT_DURATION = 2f;
-    [SerializeField] int health = 1;
-    [SerializeField] int lowHealth = 1;
-    [SerializeField] UnityEvent LowHealthEvent;
+
 
     public static readonly HashSet<Bunny> All = new();
 
+
+    [SerializeField] int _health = 1;
+    [SerializeField] int _lowHealth = 1;
+    [SerializeField] UnityEvent _lowHealthEvent;
 
     Movement _movement;
     Carrot _targetCarrot;
@@ -44,15 +47,11 @@ public class Bunny : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        health--;
-        if (health<=0)
-        {
+        _health--;
+        if (_health<=0)
             Destroy(gameObject);
-        }
-        else if (health <= lowHealth)
-        {
-            LowHealthEvent?.Invoke();
-        }
+        else if (_health <= _lowHealth)
+            _lowHealthEvent?.Invoke();
     }
 
     void FindTargetCarrot()
@@ -62,22 +61,31 @@ public class Bunny : MonoBehaviour, IPointerClickHandler
         var minimumDistanceSq = float.MaxValue;
         _targetCarrot = null;
 
-        foreach (var carrot in Carrot.All)
+        if (Carrot.All.Count != 0)
         {
-            var distSq = (curPos - carrot.transform.position).sqrMagnitude;
-            if (distSq >= minimumDistanceSq)
-                continue;
+            if (Random.value <= RANDOM_CARROT_CHANCE)
+                _targetCarrot = Carrot.All[Random.Range(0, Carrot.All.Count)];
+            else
+            {
+                foreach (var carrot in Carrot.All)
+                {
+                    var distSq = (curPos - carrot.transform.position).sqrMagnitude;
+                    if (distSq >= minimumDistanceSq)
+                        continue;
 
-            minimumDistanceSq = distSq;
-            _targetCarrot = carrot;
+                    minimumDistanceSq = distSq;
+                    _targetCarrot = carrot;
+                }
+            }
         }
 
-        if (_movement != null)
+        if (_movement is not null)
+        {
             _movement.Target = _targetCarrot?.transform;
 
-        if (_movement != null)
             if (_targetCarrot is not null)
                 transform.LookAt(_targetCarrot.transform.position);
+        }
     }
 
     void TryToEatCarrot()

@@ -11,6 +11,9 @@ public class WeightedPool<T>
 
     public void Add(float weight, T item)
     {
+        if (float.IsNaN(weight) || weight <= 0f)
+            return;
+
         _weights.Add(weight);
         _totalWeight += weight;
         _items.Add(item);
