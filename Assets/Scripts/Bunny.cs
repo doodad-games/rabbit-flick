@@ -26,6 +26,9 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public static Bunny CurrentlyHovered { get; private set; }
 
     public static int FlickDamage = 1;
+    [RuntimeInitializeOnLoadMethod]
+    public static void ResetFlickDamage() =>
+        FlickDamage = 1;
 
     static readonly int s_destroyed = Animator.StringToHash("Destroyed");
     static readonly int s_eating = Animator.StringToHash("Eating");
