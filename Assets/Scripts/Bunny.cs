@@ -18,7 +18,7 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     const float DISTANCE_THRESHOLD_SQ = 0.001f;
     const float RANDOM_CARROT_CHANCE = 0.5f;
     const float EAT_DURATION = 2f;
-
+    public static int Click_Damage = 1;
 
     public static event Action OnHoveredBunnyChanged;
 
@@ -33,7 +33,6 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         CurrentlyHovered = bunny;
         OnHoveredBunnyChanged?.Invoke();
     }
-
 
     public event Action OnReachedLowLife;
     public event Action OnFlicked;
@@ -95,7 +94,7 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void TakeFlick()
     {
-        _health--;
+        _health -= Click_Damage;
 
         if (_health <= 0)
         {
