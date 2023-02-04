@@ -29,7 +29,6 @@ namespace DefaultNamespace
                      Random.Range(1.0f,-1.0f)),
                 _knockOffForce, _knockOffForce,ForceMode.Impulse);
             yield return new WaitForSeconds(_disapearTime);
-            Debug.Log($"transform.localScale.magnitude = {transform.localScale.magnitude}");
             while (transform.localScale.magnitude > 0.1f)
             {
                 Vector3 newScale  = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z) * (1-Time.deltaTime*5);
