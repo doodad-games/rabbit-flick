@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -28,6 +27,7 @@ namespace DefaultNamespace
             _startPowerUpEvent?.Invoke();
             yield return new WaitForSecondsRealtime(_powerUpDuration);
             _endPowerUpEvent?.Invoke();
+            yield return new WaitForSecondsRealtime(10f); // This is to make sure any other effects are lost.
             Destroy(gameObject);
         }
 
