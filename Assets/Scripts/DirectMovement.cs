@@ -6,13 +6,15 @@ public class DirectMovement : Movement
 
     public void Update()
     {
-        if (Target == null)
+        if (!HasTarget)
             return;
 
         transform.position = Vector3.MoveTowards(
             transform.position,
-            Target.position,
+            Target,
             DistancePerSecond * Time.deltaTime
         );
+
+        transform.LookAt(Target);
     }
 }

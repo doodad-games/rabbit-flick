@@ -8,7 +8,15 @@ using Random = UnityEngine.Random;
 
 public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    const float CARROT_DISTANCE_THRESHOLD_SQ = 0.001f;
+    enum State
+    {
+        LookingForFood,
+        Eating,
+        Leaving,
+    }
+
+
+    const float DISTANCE_THRESHOLD_SQ = 0.001f;
     const float RANDOM_CARROT_CHANCE = 0.5f;
     const float EAT_DURATION = 2f;
 
@@ -31,19 +39,27 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     Movement _movement;
     Carrot _targetCarrot;
-    bool _isEating;
+    State _state;
 
     public void OnEnable()
     {
         All.Add(this);
 
+        GameManager.OnLoseGame += StartLeaving;
+
         if (_movement == null)
             _movement = GetComponent<Movement>();
+
+        if (GameManager.I.CurState == GameManager.State.Menu)
+            StartLeaving();
+        else _state = State.LookingForFood;
     }
 
     public void OnDisable()
     {
         All.Remove(this);
+
+        GameManager.OnLoseGame -= StartLeaving;
 
         if (CurrentlyHovered == this)
             SetHoveredBunny(null);
@@ -51,14 +67,16 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void Update()
     {
-        if (_isEating)
-            return;
+        if (_state == State.LookingForFood)
+        {
+            if (_targetCarrot == null)
+                FindTargetCarrot();
 
-        if (_targetCarrot == null)
-            FindTargetCarrot();
-
-        if (_targetCarrot != null)
-            TryToEatCarrot();
+            if (_targetCarrot != null)
+                TryToEatCarrot();
+        }
+        else if (_state == State.Leaving)
+            SelfDestructIfFinishedLeaving();
     }
 
     public void OnPointerEnter(PointerEventData eventData) =>
@@ -105,18 +123,13 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
 
         if (_movement is not null)
-        {
-            _movement.Target = _targetCarrot?.transform;
-
-            if (_targetCarrot is not null)
-                transform.LookAt(_targetCarrot.transform.position);
-        }
+            _movement.SetTarget(_targetCarrot?.transform);
     }
 
     void TryToEatCarrot()
     {
         var carrotPositionDelta = _targetCarrot.transform.position - transform.position;
-        if (Vector3.SqrMagnitude(carrotPositionDelta) > CARROT_DISTANCE_THRESHOLD_SQ)
+        if (Vector3.SqrMagnitude(carrotPositionDelta) > DISTANCE_THRESHOLD_SQ)
             return;
 
         StartCoroutine(EatCarrot());
@@ -128,12 +141,34 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             Destroy(_targetCarrot.gameObject);
             _movement.enabled = false;
-            _isEating = true;
+            _state = State.Eating;
 
             yield return new WaitForSeconds(EAT_DURATION);
 
-            _isEating = false;
             _movement.enabled = true;
+
+            if (_state == State.Leaving)
+                yield break;
+
+            _state = State.LookingForFood;
         }
+    }
+
+    void StartLeaving()
+    {
+        if (_state == State.Leaving)
+            return;
+
+        _state = State.Leaving;
+        _movement.SetTarget(BunnySpawnZone.I.PickPointInSpawnZone());
+    }
+
+    void SelfDestructIfFinishedLeaving()
+    {
+        var targetDelta = _movement.Target - transform.position;
+        if (Vector3.SqrMagnitude(targetDelta) > DISTANCE_THRESHOLD_SQ)
+            return;
+
+        Destroy(gameObject);
     }
 }

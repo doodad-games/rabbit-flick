@@ -70,15 +70,16 @@ public class BunnySpawnZone : MonoBehaviour
         }
     }
 
-    void ActuallySpawn(GameObject prefab)
+    public Vector3 PickPointInSpawnZone()
     {
         var zOffset = Random.Range(0f, _boundsHeight);
-        var spawnPoint = new Vector3(
+        return new Vector3(
             _boundsBottomLeft.x,
             _boundsBottomLeft.y,
             _boundsBottomLeft.z + zOffset
         );
-
-        Instantiate(prefab, spawnPoint, Quaternion.identity);
     }
+
+    void ActuallySpawn(GameObject prefab) =>
+        Instantiate(prefab, PickPointInSpawnZone(), Quaternion.identity);
 }
