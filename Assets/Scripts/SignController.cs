@@ -32,7 +32,7 @@ public class SignController : MonoBehaviour, IPointerClickHandler
         var showPlayButton = GameManager.I.CurState == GameManager.State.Menu;
 
         if (!showPlayButton)
-            _waveNumberText.text = $"{GameManager.I.WaveNum}";
+            _waveNumberText.text = $"{GameManager.I.WaveNum:00}";
 
         _canBePressed = showPlayButton;
         _playButtonObject.SetActive(showPlayButton);
