@@ -28,14 +28,17 @@ public class LaunchAndDestroy : MonoBehaviour
 
         yield return new WaitForSeconds(disappearAfter);
 
+        var tfm = transform;
+
         while (transform.localScale.sqrMagnitude > 0.01f)
         {
-            var tfm = transform;
-            var scale = tfm.localScale;
-            var newScale  = new Vector3(scale.x, scale.y, scale.z) * (1 - Time.deltaTime * 5);
-            tfm.localScale = newScale;
             yield return null;
+            var scale = tfm.localScale;
+            var newScale = new Vector3(scale.x, scale.y, scale.z) * (1 - Time.deltaTime * 5);
+            tfm.localScale = newScale;
         }
+
+        tfm.localScale = Vector3.zero;
 
         Destroy(gameObject);
     }

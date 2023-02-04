@@ -67,7 +67,10 @@ public class GameManager : MonoBehaviour
     {
         if (WaveNum == 0)
             ++WaveNum;
-        else WaveNum += Mathf.Max(1, 8 - Carrot.NumDestroyedThisWave);
+        else WaveNum += Mathf.Min(
+            Mathf.Max(1, 12 - Carrot.NumDestroyedThisWave),
+            Carrot.All.Count
+        );
 
         CurState = State.WaitingForSpawnCompletion;
 
