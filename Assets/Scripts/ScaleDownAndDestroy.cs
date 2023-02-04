@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ScaleDownAndDestroy : MonoBehaviour
 {
-    public void Use(float scaleDownTime, GameObject destroyTarget)
+    public void Use(float scaleDownTime, GameObject destroyTarget, bool useScaledTime = true)
     {
         StartCoroutine(ScaleDownAndDestroy());
         return;
@@ -19,7 +19,7 @@ public class ScaleDownAndDestroy : MonoBehaviour
                 tfm.localScale = Vector3.one * (1f - timeElapsed / scaleDownTime);
 
                 yield return null;
-                timeElapsed += Time.deltaTime;
+                timeElapsed += useScaledTime ? Time.deltaTime : Time.unscaledDeltaTime;
             }
 
             Destroy(destroyTarget);

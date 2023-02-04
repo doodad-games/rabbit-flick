@@ -19,7 +19,7 @@ public class Flicker : MonoBehaviour
     {
         if (_isFlicking)
         {
-            _nextFlickAfter -= Time.deltaTime;
+            _nextFlickAfter -= Time.unscaledDeltaTime;
             while (_nextFlickAfter < 0f)
             {
                 _nextFlickAfter += FLICK_INTERVAL;

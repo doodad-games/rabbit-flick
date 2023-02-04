@@ -10,10 +10,10 @@ public class BunnyLaunchAndDestroy : MonoBehaviour
     public void OnEnable()
     {
         _bunny = GetComponent<Bunny>();
-        _bunny.OnDestroyed += LaunchSelf;
+        _bunny.OnFlicked += LaunchSelf;
     }
     public void OnDisable() =>
-        _bunny.OnDestroyed -= LaunchSelf;
+        _bunny.OnFlicked -= LaunchSelf;
 
     void LaunchSelf() =>
         gameObject.AddComponent<LaunchAndDestroy>()
