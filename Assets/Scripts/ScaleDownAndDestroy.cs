@@ -17,7 +17,6 @@ public class ScaleDownAndDestroy : MonoBehaviour
             while (timeElapsed <= scaleDownTime)
             {
                 tfm.localScale = Vector3.one * (1f - timeElapsed / scaleDownTime);
-
                 yield return null;
                 timeElapsed += useScaledTime ? Time.deltaTime : Time.unscaledDeltaTime;
             }
