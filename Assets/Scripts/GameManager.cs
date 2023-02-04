@@ -37,6 +37,9 @@ public class GameManager : MonoBehaviour
     public void OnDisable() =>
         I = null;
 
+    public void Start() =>
+        CarrotTitle.I.Show();
+
     public void Update()
     {
         if (CurState is State.Menu or State.TransitioningBetweenWaves)
@@ -58,6 +61,7 @@ public class GameManager : MonoBehaviour
 
     public void StartNewGame()
     {
+        CarrotTitle.I.Hide();
         CarrotSpawnZone.I.SpawnCarrots();
         WaveNum = 0;
         StartCoroutine(TransitionToNextWave());
@@ -122,6 +126,9 @@ public class GameManager : MonoBehaviour
         {
             CurState = State.Menu;
             OnLoseGame?.Invoke();
+
+            StartCoroutine(ShowTitleSoon());
+
             return true;
         }
 
@@ -151,5 +158,15 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(WAVE_TRANSITION_DURATION);
 
         StartNextWave();
+    }
+
+    IEnumerator ShowTitleSoon()
+    {
+        yield return new WaitForSeconds(1.5f);
+
+        if (CurState != State.Menu)
+            yield break;
+
+        CarrotTitle.I.Show();
     }
 }

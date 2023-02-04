@@ -45,5 +45,4 @@ public class Carrot : MonoBehaviour
 
         Destroy(this);
     }
-
 }
