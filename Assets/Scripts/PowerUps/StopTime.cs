@@ -4,45 +4,45 @@ using UnityEngine.Assertions;
 
 namespace DefaultNamespace
 {
-    public class SlowTime : MonoBehaviour
+
+    public class StopTime : MonoBehaviour
     {
-        [SerializeField] float timeSlowMultiplier = 0.4f;
-        [SerializeField] float timeResumeDuration = 0.8f;
-        [SerializeField] GameObject slowCanvas;
+        [SerializeField] GameObject stopCanvas;
+        [SerializeField] float timeResumeDuration = 0.08f;
 
         void Awake()
         {
-            Assert.IsNotNull(slowCanvas);
-            slowCanvas.SetActive(false);
+            Assert.IsNotNull(stopCanvas);
+            stopCanvas.SetActive(false);
         }
 
-        public void StartSlowTime()
+        public void StartStopTime()
         {
-            slowCanvas.SetActive(true);
-            Time.timeScale = timeSlowMultiplier;
+            stopCanvas.SetActive(true);
+            Time.timeScale = 0;
         }
 
-        public void EndSlowTime()
+        public void EndStopTime()
         {
             StartCoroutine(SlowlyResume());
         }
         IEnumerator SlowlyResume()
         {
-            CanvasGroup fadeOutCanvasGroup = slowCanvas.gameObject.AddComponent<CanvasGroup>();
+            CanvasGroup fadeOutCanvasGroup = stopCanvas.gameObject.AddComponent<CanvasGroup>();
             fadeOutCanvasGroup.interactable = false;
             fadeOutCanvasGroup.blocksRaycasts = false;
             fadeOutCanvasGroup.alpha = 1;
             float time = 0;
             while (time < timeResumeDuration)
             {
-                Time.timeScale = Mathf.Lerp(timeSlowMultiplier, 1, time / timeResumeDuration);
+                Time.timeScale = Mathf.Lerp(0, 1, time / timeResumeDuration);
                 fadeOutCanvasGroup.alpha = Mathf.Lerp(1, 0, time / timeResumeDuration);
                 time += Time.unscaledDeltaTime;
                 yield return null;
             }
             Time.timeScale = 1;
             fadeOutCanvasGroup.alpha = 0;
-            slowCanvas.gameObject.SetActive(false);
+            stopCanvas.gameObject.SetActive(false);
         }
     }
 }
