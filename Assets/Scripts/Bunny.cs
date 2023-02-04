@@ -18,12 +18,14 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     const float DISTANCE_THRESHOLD_SQ = 0.001f;
     const float RANDOM_CARROT_CHANCE = 0.5f;
     const float EAT_DURATION = 2f;
-    public static int Click_Damage = 1;
 
     public static event Action OnHoveredBunnyChanged;
+    public static event Action<Bunny> OnSomethingFlicked;
 
     public static readonly HashSet<Bunny> All = new();
     public static Bunny CurrentlyHovered { get; private set; }
+
+    public static int FlickDamage = 1;
 
     static readonly int s_destroyed = Animator.StringToHash("Destroyed");
     static readonly int s_eating = Animator.StringToHash("Eating");
@@ -94,7 +96,8 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void TakeFlick()
     {
-        _health -= Click_Damage;
+        _health -= FlickDamage;
+        OnSomethingFlicked?.Invoke(this);
 
         if (_health <= 0)
         {

@@ -4,16 +4,12 @@ namespace DefaultNamespace
 {
     public class CriticalFlick : MonoBehaviour
     {
-        [SerializeField] int increasedDamage = 3;
+        [SerializeField] int increasedDamage = 2;
 
-        public void StartExtraDamage()
-        {
-            Bunny.Click_Damage = increasedDamage;
-        }
+        public void StartExtraDamage() =>
+            Bunny.FlickDamage += increasedDamage;
 
-        public void EndExtraDamage()
-        {
-            Bunny.Click_Damage = 1;
-        }
+        public void EndExtraDamage() =>
+            Bunny.FlickDamage -= increasedDamage;
     }
 }
