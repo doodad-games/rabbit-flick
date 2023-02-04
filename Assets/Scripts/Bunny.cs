@@ -36,7 +36,7 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
 
     public event Action OnReachedLowLife;
-    public event Action OnDestroyed;
+    public event Action OnFlicked;
 
     [SerializeField] Animator _animator;
     [SerializeField] int _health = 1;
@@ -100,7 +100,7 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if (_health <= 0)
         {
             _animator.SetTrigger(s_destroyed);
-            OnDestroyed?.Invoke();
+            OnFlicked?.Invoke();
             Destroy(_movement);
             Destroy(this);
         }
