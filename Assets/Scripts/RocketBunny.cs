@@ -10,10 +10,10 @@ public class RocketBunny : MonoBehaviour
     public void OnEnable()
     {
         _bunny = GetComponent<Bunny>();
-        _bunny.OnDestroyed += LaunchRocket;
+        _bunny.OnFlicked += LaunchRocket;
     }
     public void OnDisable() =>
-        _bunny.OnDestroyed -= LaunchRocket;
+        _bunny.OnFlicked -= LaunchRocket;
 
     void LaunchRocket()
     {
