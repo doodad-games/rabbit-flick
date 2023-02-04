@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Playables;
 
 public class FarmerTimelineController : MonoBehaviour
@@ -9,17 +8,19 @@ public class FarmerTimelineController : MonoBehaviour
 
     public void OnEnable()
     {
-        GameManager.OnWaveCompleted += HandleWaveCompleted;
+        GameManager.OnNewGameStarted += HandleWaveTransition;
+        GameManager.OnWaveCompleted += HandleWaveTransition;
         GameManager.OnLoseGame += HandleLoseGame;
     }
 
     public void OnDisable()
     {
-        GameManager.OnWaveCompleted -= HandleWaveCompleted;
+        GameManager.OnNewGameStarted -= HandleWaveTransition;
+        GameManager.OnWaveCompleted -= HandleWaveTransition;
         GameManager.OnLoseGame -= HandleLoseGame;
     }
 
-    void HandleWaveCompleted() =>
+    void HandleWaveTransition() =>
         _waveTransitionDirector.Play();
 
     void HandleLoseGame() =>

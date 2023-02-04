@@ -1,0 +1,45 @@
+{
+    "name": "Input Actions",
+    "maps": [
+        {
+            "name": "Gameplay",
+            "id": "204f2f53-26c2-4de4-aa63-6c9c8059e881",
+            "actions": [
+                {
+                    "name": "Flick",
+                    "type": "Value",
+                    "id": "07a2ada0-ffdd-4439-98cc-1f12b329c7a1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "d002adb3-dc1d-4d41-8912-cff3b02d30d8",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "Press(pressPoint=0.01,behavior=2)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Flick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a65f936b-53fd-446a-8881-15976325a46d",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "Press(pressPoint=0.01,behavior=2)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Flick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

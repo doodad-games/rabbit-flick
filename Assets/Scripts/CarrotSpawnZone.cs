@@ -4,6 +4,9 @@ using UnityEngine.Assertions;
 [RequireComponent(typeof(BoxCollider))]
 public class CarrotSpawnZone : MonoBehaviour
 {
+    public static CarrotSpawnZone I { get; private set; }
+
+
     public Vector2Int NumRowsColumns;
 
     BoxCollider _box;
@@ -20,8 +23,11 @@ public class CarrotSpawnZone : MonoBehaviour
         _carrotPrefab = Resources.Load<GameObject>(Constants.Resources.CARROT_PREFAB);
     }
 
-    public void Start() =>
-        SpawnCarrots();
+    public void OnEnable() =>
+        I = this;
+
+    public void OnDisable() =>
+        I = null;
 
     public void SpawnCarrots()
     {

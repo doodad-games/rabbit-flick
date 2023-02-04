@@ -1,17 +1,28 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using Random = UnityEngine.Random;
 
-public class Bunny : MonoBehaviour, IPointerClickHandler
+public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     const float CARROT_DISTANCE_THRESHOLD_SQ = 0.001f;
     const float RANDOM_CARROT_CHANCE = 0.5f;
     const float EAT_DURATION = 2f;
 
 
+    public static event Action OnHoveredBunnyChanged;
+
     public static readonly HashSet<Bunny> All = new();
+    public static Bunny CurrentlyHovered { get; private set; }
+
+    static void SetHoveredBunny(Bunny bunny)
+    {
+        CurrentlyHovered = bunny;
+        OnHoveredBunnyChanged?.Invoke();
+    }
 
 
     [SerializeField] int _health = 1;
@@ -30,8 +41,13 @@ public class Bunny : MonoBehaviour, IPointerClickHandler
             _movement = GetComponent<Movement>();
     }
 
-    public void OnDisable() =>
+    public void OnDisable()
+    {
         All.Remove(this);
+
+        if (CurrentlyHovered == this)
+            SetHoveredBunny(null);
+    }
 
     public void Update()
     {
@@ -45,7 +61,16 @@ public class Bunny : MonoBehaviour, IPointerClickHandler
             TryToEatCarrot();
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public void OnPointerEnter(PointerEventData eventData) =>
+        SetHoveredBunny(this);
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (CurrentlyHovered == this)
+            SetHoveredBunny(null);
+    }
+
+    public void TakeFlick()
     {
         _health--;
         if (_health<=0)

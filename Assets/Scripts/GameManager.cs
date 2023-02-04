@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[DefaultExecutionOrder(EXEC_ORDER)]
 public class GameManager : MonoBehaviour
 {
-    enum State
+    [Serializable]
+    public enum State
     {
         Menu,
         WaitingForSpawnCompletion,
@@ -14,32 +16,39 @@ public class GameManager : MonoBehaviour
     }
 
 
-    const float WAVE_TRANSITION_DURATION = 4f;
+    const int EXEC_ORDER = -100;
+    const float WAVE_TRANSITION_DURATION = 1f;
 
 
+    public static event Action OnNewGameStarted;
     public static event Action OnWaveCompleted;
     public static event Action OnWaveStarted;
     public static event Action OnLoseGame;
 
+    public static GameManager I { get; private set; }
 
-    int _waveNum = 0;
-    State _curState = State.Menu;
 
-    public void Start() =>
-        StartNewGame();
+    public State CurState { get; private set; } = State.Menu;
+    public int WaveNum { get; private set; } = 0;
+
+    public void OnEnable() =>
+        I = this;
+
+    public void OnDisable() =>
+        I = null;
 
     public void Update()
     {
-        if (_curState is State.Menu or State.TransitioningBetweenWaves)
+        if (CurState is State.Menu or State.TransitioningBetweenWaves)
             return;
 
-        if (_curState == State.WaitingForSpawnCompletion)
+        if (CurState == State.WaitingForSpawnCompletion)
         {
             if (CheckForLoseState())
                 return;
             CheckIfFinishedSpawning();
         }
-        else if (_curState == State.WaitingForWaveCompletion)
+        else if (CurState == State.WaitingForWaveCompletion)
         {
             if (CheckForLoseState())
                 return;
@@ -47,16 +56,20 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void StartNewGame() =>
-        StartNextWave();
+    public void StartNewGame()
+    {
+        CarrotSpawnZone.I.SpawnCarrots();
+        WaveNum = 0;
+        StartCoroutine(TransitionToNextWave());
+    }
 
     public void StartNextWave()
     {
-        if (_waveNum == 0)
-            ++_waveNum;
-        else _waveNum += Mathf.Max(1, 8 - Carrot.NumDestroyedThisWave);
+        if (WaveNum == 0)
+            ++WaveNum;
+        else WaveNum += Mathf.Max(1, 8 - Carrot.NumDestroyedThisWave);
 
-        _curState = State.WaitingForSpawnCompletion;
+        CurState = State.WaitingForSpawnCompletion;
 
         var thingsToSpawn = GenerateThingsToSpawn();
         BunnySpawnZone.I.Spawn(thingsToSpawn);
@@ -68,13 +81,13 @@ public class GameManager : MonoBehaviour
     {
         var thingsToSpawn = new List<BunnySpawnZone.SpawnInstruction>();
 
-        var numBunnies = 12 + _waveNum;
-        var totalSpawnDuration = 9 + Mathf.Log(_waveNum / 10f + 1) * 10f;
+        var numBunnies = 12 + WaveNum;
+        var totalSpawnDuration = 9 + Mathf.Log(WaveNum / 10f + 1) * 10f;
         var bunnySpawnInterval = totalSpawnDuration / numBunnies;
 
         var bunnyPool = new WeightedPool<GameObject>();
         bunnyPool.Add(
-            weight: ((float)Math.E - Mathf.Log(2 * _waveNum)) * 10 + 50,
+            weight: ((float)Math.E - Mathf.Log(2 * WaveNum)) * 10 + 50,
             Resources.Load<GameObject>(Constants.Resources.BUNNY_REGULAR_PREFAB)
         );
         bunnyPool.Add(
@@ -97,14 +110,14 @@ public class GameManager : MonoBehaviour
 
 
         float GraduallyIncreasingWeight(int waveOffset, float logMultiplier, float constantMultiplier) =>
-            Mathf.Log(_waveNum + waveOffset) * logMultiplier + (_waveNum + waveOffset) * constantMultiplier;
+            Mathf.Log(WaveNum + waveOffset) * logMultiplier + (WaveNum + waveOffset) * constantMultiplier;
     }
 
     bool CheckForLoseState()
     {
         if (Carrot.All.Count == 0)
         {
-            _curState = State.Menu;
+            CurState = State.Menu;
             OnLoseGame?.Invoke();
             return true;
         }
@@ -115,7 +128,7 @@ public class GameManager : MonoBehaviour
     void CheckIfFinishedSpawning()
     {
         if (!BunnySpawnZone.I.IsSpawningInProgress)
-            _curState = State.WaitingForWaveCompletion;
+            CurState = State.WaitingForWaveCompletion;
     }
 
     void CheckForWaveCompletion()
@@ -126,8 +139,11 @@ public class GameManager : MonoBehaviour
 
     IEnumerator TransitionToNextWave()
     {
-        _curState = State.TransitioningBetweenWaves;
-        OnWaveCompleted?.Invoke();
+        CurState = State.TransitioningBetweenWaves;
+
+        if (WaveNum == 0)
+            OnNewGameStarted?.Invoke();
+        else OnWaveCompleted?.Invoke();
 
         yield return new WaitForSeconds(WAVE_TRANSITION_DURATION);
 
