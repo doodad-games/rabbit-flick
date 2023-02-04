@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using Random = UnityEngine.Random;
 
@@ -26,6 +25,9 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public static readonly HashSet<Bunny> All = new();
     public static Bunny CurrentlyHovered { get; private set; }
 
+    static readonly int s_destroyed = Animator.StringToHash("Destroyed");
+    static readonly int s_eating = Animator.StringToHash("Eating");
+
     static void SetHoveredBunny(Bunny bunny)
     {
         CurrentlyHovered = bunny;
@@ -33,9 +35,12 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
 
 
+    public event Action OnReachedLowLife;
+    public event Action OnDestroyed;
+
+    [SerializeField] Animator _animator;
     [SerializeField] int _health = 1;
     [SerializeField] int _lowHealth = 1;
-    [SerializeField] UnityEvent _lowHealthEvent;
 
     Movement _movement;
     Carrot _targetCarrot;
@@ -91,10 +96,16 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void TakeFlick()
     {
         _health--;
-        if (_health<=0)
-            Destroy(gameObject);
+
+        if (_health <= 0)
+        {
+            _animator.SetTrigger(s_destroyed);
+            OnDestroyed?.Invoke();
+            Destroy(_movement);
+            Destroy(this);
+        }
         else if (_health <= _lowHealth)
-            _lowHealthEvent?.Invoke();
+            OnReachedLowLife?.Invoke();
     }
 
     void FindTargetCarrot()
@@ -139,6 +150,8 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         IEnumerator EatCarrot()
         {
+            _animator.SetBool(s_eating, true);
+
             Destroy(_targetCarrot.gameObject);
             _movement.enabled = false;
             _state = State.Eating;
@@ -146,6 +159,7 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             yield return new WaitForSeconds(EAT_DURATION);
 
             _movement.enabled = true;
+            _animator.SetBool(s_eating, false);
 
             if (_state == State.Leaving)
                 yield break;
