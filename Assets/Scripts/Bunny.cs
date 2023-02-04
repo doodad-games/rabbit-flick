@@ -152,7 +152,7 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             _animator.SetBool(s_eating, true);
 
-            Destroy(_targetCarrot.gameObject);
+            _targetCarrot.Destroy();
             _movement.enabled = false;
             _state = State.Eating;
 
