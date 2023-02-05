@@ -1,3 +1,4 @@
+using MyLibrary;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -18,6 +19,8 @@ public class SignController : MonoBehaviour, IPointerClickHandler
     {
         if (!_canBePressed)
             return;
+
+        SoundController.Play("Sign Button Pressed");
 
 #if UNITY_EDITOR
         Assert.IsTrue(GameManager.I.CurState == GameManager.State.Menu);
