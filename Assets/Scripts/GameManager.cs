@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
 
 
     const int EXEC_ORDER = -100;
+    // WARNING: Changing this has side-effects on the timeline animation -
+    // the number on the sign may change if the sign is thrown before or after this duration!
     const float WAVE_TRANSITION_DURATION = 2f;
 
 
@@ -69,13 +71,6 @@ public class GameManager : MonoBehaviour
 
     public void StartNextWave()
     {
-        if (WaveNum == 0)
-            ++WaveNum;
-        else WaveNum += Mathf.Min(
-            Mathf.Max(1, 12 - Carrot.NumDestroyedThisWave),
-            Carrot.All.Count
-        );
-
         CurState = State.WaitingForSpawnCompletion;
 
         var thingsToSpawn = GenerateThingsToSpawn();
@@ -154,6 +149,13 @@ public class GameManager : MonoBehaviour
         if (WaveNum == 0)
             OnNewGameStarted?.Invoke();
         else OnWaveCompleted?.Invoke();
+
+        if (WaveNum == 0)
+            ++WaveNum;
+        else WaveNum += Mathf.Min(
+            Mathf.Max(1, 12 - Carrot.NumDestroyedThisWave),
+            Carrot.All.Count
+        );
 
         yield return new WaitForSeconds(WAVE_TRANSITION_DURATION);
 
