@@ -36,6 +36,7 @@ public class PowerUp : MonoBehaviour, IPointerClickHandler
     IEnumerator ActivatePowerUp()
     {
         enabled = false;
+        MakeAllCollidersIsTriggerAndIgnoreRaycasts();
         DoDestructionAnimation();
         _startPowerUpEvent?.Invoke();
         if (powerUpTimeDurationType == TimeDurationType.RealTime)
@@ -50,9 +51,23 @@ public class PowerUp : MonoBehaviour, IPointerClickHandler
         yield return EventuallySelfDestruct();
     }
 
+    void MakeAllCollidersIsTriggerAndIgnoreRaycasts()
+    {
+        var collidersOnGameObject = GetComponentsInChildren<Collider>();
+
+        if (collidersOnGameObject != null)
+        {
+            foreach (var colliderActive in collidersOnGameObject)
+            {
+                colliderActive.isTrigger = true;
+                colliderActive.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+            }
+        }
+    }
+
     IEnumerator EventuallySelfDestruct()
     {
-        yield return new WaitForSecondsRealtime(10f); // This is to make sure any other effects are lost.
+        yield return new WaitForSecondsRealtime(20f); // This is to make sure any other effects are lost.
         Destroy(gameObject);
     }
 
