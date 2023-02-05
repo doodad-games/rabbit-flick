@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using MyLibrary;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Flicker : MonoBehaviour
@@ -53,9 +54,12 @@ public class Flicker : MonoBehaviour
         if (_isFlicking)
             return;
 
-        Flick();
         _isFlicking = true;
         _nextFlickAfter = FLICK_INTERVAL;
+
+        // Flick next frame so IPointerEnterHandler has time to trigger on bunnies
+        // (needed on pointer devices which don't have a mouse)
+        new Async(this).Next().Then(Flick);
     }
 
     void StopFlicking()
