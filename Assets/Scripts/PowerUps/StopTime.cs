@@ -9,6 +9,7 @@ namespace DefaultNamespace
     {
         [SerializeField] GameObject stopCanvas;
         [SerializeField] float timeResumeDuration = 0.08f;
+        public static int HowManyStopTimesStacked = 0;
 
         void Awake()
         {
@@ -18,13 +19,22 @@ namespace DefaultNamespace
 
         public void StartStopTime()
         {
+            HowManyStopTimesStacked++;
             stopCanvas.SetActive(true);
             Time.timeScale = 0;
         }
 
         public void EndStopTime()
         {
-            StartCoroutine(SlowlyResume());
+            HowManyStopTimesStacked--;
+            if (HowManyStopTimesStacked <= 0)
+            {
+                StartCoroutine(SlowlyResume());
+            }
+            else
+            {
+                stopCanvas.gameObject.SetActive(false);
+            }
         }
         IEnumerator SlowlyResume()
         {

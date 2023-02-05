@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -10,6 +11,8 @@ namespace DefaultNamespace
         [SerializeField] float timeResumeDuration = 0.8f;
         [SerializeField] GameObject slowCanvas;
 
+        public static int HowManySlowTimesStacked = 0;
+
         void Awake()
         {
             Assert.IsNotNull(slowCanvas);
@@ -18,13 +21,29 @@ namespace DefaultNamespace
 
         public void StartSlowTime()
         {
+            StartCoroutine(Wait1FrameBeforeSlowTime());
+        }
+
+        IEnumerator Wait1FrameBeforeSlowTime()
+        {
+            yield return null;
             slowCanvas.SetActive(true);
+            HowManySlowTimesStacked++;
             Time.timeScale = timeSlowMultiplier;
         }
 
         public void EndSlowTime()
         {
-            StartCoroutine(SlowlyResume());
+            HowManySlowTimesStacked--;
+            if (HowManySlowTimesStacked <= 0 && StopTime.HowManyStopTimesStacked <= 0)
+            {
+                HowManySlowTimesStacked = 0;
+                StartCoroutine(SlowlyResume());
+            }
+            else
+            {
+                slowCanvas.gameObject.SetActive(false);
+            }
         }
         IEnumerator SlowlyResume()
         {
@@ -37,7 +56,7 @@ namespace DefaultNamespace
             {
                 Time.timeScale = Mathf.Lerp(timeSlowMultiplier, 1, time / timeResumeDuration);
                 fadeOutCanvasGroup.alpha = Mathf.Lerp(1, 0, time / timeResumeDuration);
-                time += Time.unscaledDeltaTime;
+                time += Time.deltaTime;
                 yield return null;
             }
             Time.timeScale = 1;

@@ -2,10 +2,13 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 public class PowerUp : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] float _powerUpDuration = 3.5f;
+    [Tooltip("Don't use 'GameTime' on 'StopTime' ty ^_^")]
+    [SerializeField] TimeDurationType powerUpTimeDurationType = TimeDurationType.RealTime;
     [SerializeField] GameObject _visuals;
     [SerializeField] UnityEvent _startPowerUpEvent;
     [SerializeField] UnityEvent _endPowerUpEvent;
@@ -30,7 +33,14 @@ public class PowerUp : MonoBehaviour, IPointerClickHandler
         enabled = false;
         DoDestructionAnimation();
         _startPowerUpEvent?.Invoke();
-        yield return new WaitForSecondsRealtime(_powerUpDuration);
+        if (powerUpTimeDurationType == TimeDurationType.RealTime)
+        {
+            yield return new WaitForSecondsRealtime(_powerUpDuration);
+        }
+        else if (powerUpTimeDurationType == TimeDurationType.GameTime)
+        {
+            yield return new WaitForSeconds(_powerUpDuration);
+        }
         _endPowerUpEvent?.Invoke();
         yield return EventuallySelfDestruct();
     }
@@ -51,4 +61,6 @@ public class PowerUp : MonoBehaviour, IPointerClickHandler
     void DoDestructionAnimation() =>
         _visuals.AddComponent<ScaleDownAndDestroy>()
             .Use(scaleDownTime: 0.5f, destroyTarget: _visuals, useScaledTime: false);
+    
+    public enum TimeDurationType { GameTime, RealTime }
 }
