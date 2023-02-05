@@ -119,7 +119,7 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         if (flickedAway && !string.IsNullOrEmpty(_sounds.FlickedAwaySound))
             SoundController.Play(_sounds.FlickedAwaySound);
-        else if (isOnLowHealth && !string.IsNullOrEmpty(_sounds.FlickedArmourSound))
+        else if (!wasOnLowHealth && !string.IsNullOrEmpty(_sounds.FlickedArmourSound))
             SoundController.Play(_sounds.FlickedArmourSound);
         else if (!string.IsNullOrEmpty(_sounds.FlickedSound))
             SoundController.Play(_sounds.FlickedSound);

@@ -16,6 +16,7 @@ public class BunnyDropPowerupOnFlicked : MonoBehaviour
         s_powerupPool.Add(75f, Resources.Load<GameObject>(Constants.Resources.POWERUP_CRITICAL_FLICK_PREFAB));
         s_powerupPool.Add(100f, Resources.Load<GameObject>(Constants.Resources.POWERUP_SLOW_TIME_PREFAB));
         s_powerupPool.Add(30f, Resources.Load<GameObject>(Constants.Resources.POWERUP_STOP_TIME_PREFAB));
+        s_powerupPool.Add(100f, Resources.Load<GameObject>(Constants.Resources.POWERUP_GROW_CARROTS_PREFAB));
     }
 
     [RuntimeInitializeOnLoadMethod]

@@ -3,7 +3,6 @@ using MyLibrary;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 
 public class PowerUp : MonoBehaviour, IPointerClickHandler
 {
