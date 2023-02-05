@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -10,6 +9,9 @@ namespace DefaultNamespace
         [SerializeField] float timeSlowMultiplier = 0.4f;
         [SerializeField] float timeResumeDuration = 0.8f;
         [SerializeField] GameObject slowCanvas;
+        [SerializeField] GameObject CarrotMeshRotaionPoint;
+        [SerializeField] float meshRotationDegreesPerSecond =20;
+        bool rotatingMesh;
 
         public static int HowManySlowTimesStacked = 0;
 
@@ -17,6 +19,15 @@ namespace DefaultNamespace
         {
             Assert.IsNotNull(slowCanvas);
             slowCanvas.SetActive(false);
+            rotatingMesh = true;
+        }
+
+        void Update()
+        {
+            if (rotatingMesh)
+            {
+                transform.Rotate(new Vector3(0, meshRotationDegreesPerSecond, 0) * Time.deltaTime);
+            }
         }
 
         public void StartSlowTime()
@@ -27,6 +38,7 @@ namespace DefaultNamespace
         IEnumerator Wait1FrameBeforeSlowTime()
         {
             yield return null;
+            rotatingMesh = false;
             slowCanvas.SetActive(true);
             HowManySlowTimesStacked++;
             Time.timeScale = timeSlowMultiplier;
