@@ -100,6 +100,10 @@ public class GameManager : MonoBehaviour
             weight: GraduallyIncreasingWeight(waveOffset: -5, logMultiplier: 1f, constantMultiplier: 0.02f),
             Resources.Load<GameObject>(Constants.Resources.BUNNY_HEAVY_PREFAB)
         );
+        bunnyPool.Add(
+            weight: GraduallyIncreasingWeight(waveOffset: 0, logMultiplier: 1f, constantMultiplier: 0.02f),
+            Resources.Load<GameObject>(Constants.Resources.BUNNY_ROCKET_PREFAB)
+        );
 
         for (var i = 0; i != numBunnies; ++i)
             thingsToSpawn.Add(new BunnySpawnZone.SpawnInstruction
