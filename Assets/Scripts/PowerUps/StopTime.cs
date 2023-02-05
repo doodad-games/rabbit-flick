@@ -10,15 +10,27 @@ namespace DefaultNamespace
         [SerializeField] GameObject stopCanvas;
         [SerializeField] float timeResumeDuration = 0.08f;
         public static int HowManyStopTimesStacked = 0;
+        [SerializeField] float meshRotationDegreesPerSecond = 40;
+        bool _rotatingMesh;
 
         void Awake()
         {
             Assert.IsNotNull(stopCanvas);
             stopCanvas.SetActive(false);
+            _rotatingMesh = true;
+        }
+
+        void Update()
+        {
+            if (_rotatingMesh)
+            {
+                transform.Rotate(new Vector3(0, meshRotationDegreesPerSecond, 0) * Time.deltaTime);
+            }
         }
 
         public void StartStopTime()
         {
+            _rotatingMesh = false;
             HowManyStopTimesStacked++;
             stopCanvas.SetActive(true);
             Time.timeScale = 0;
