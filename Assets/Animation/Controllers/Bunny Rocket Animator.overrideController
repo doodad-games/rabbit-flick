@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Bunny Rocket Animator
+  m_Controller: {fileID: 9100000, guid: 2e859cf853890b04f8400b136b061106, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 1827226128182048838, guid: 0c0964958ddcd2148b30891afa5701a2,
+      type: 3}
+    m_OverrideClip: {fileID: 7400000, guid: 8f7958ac101b4a246b7be1202d9dbb9b, type: 2}
+  - m_OriginalClip: {fileID: 1827226128182048838, guid: 0a18fbdeb22261b408f75177a06fbc18,
+      type: 3}
+    m_OverrideClip: {fileID: 7400000, guid: 8f7958ac101b4a246b7be1202d9dbb9b, type: 2}

@@ -56,10 +56,20 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     [SerializeField] int _lowHealth = 1;
     [SerializeField] bool _skipsEatingState;
     [SerializeField] Sounds _sounds;
+    [SerializeField] Collider[] _colliders;
 
     Movement _movement;
     Carrot _targetCarrot;
     State _state;
+
+#if UNITY_EDITOR
+    [ContextMenu("Populate Colliders")]
+    public void PopulateColliders()
+    {
+        _colliders = GetComponentsInChildren<Collider>();
+        UnityEditor.EditorUtility.SetDirty(this);
+    }
+#endif
 
     public void OnEnable()
     {
@@ -129,9 +139,13 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if (flickedAway)
         {
             _animator.SetTrigger(s_destroyed);
+
             OnFlicked?.Invoke();
+
             Destroy(_movement);
             Destroy(this);
+            foreach (var coll in _colliders)
+                Destroy(coll);
         }
         else if (isOnLowHealth && !wasOnLowHealth)
             OnReachedLowLife?.Invoke();

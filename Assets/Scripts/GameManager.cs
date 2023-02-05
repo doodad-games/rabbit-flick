@@ -81,10 +81,13 @@ public class GameManager : MonoBehaviour
 
     List<BunnySpawnZone.SpawnInstruction> GenerateThingsToSpawn()
     {
+        // Formula curves visualised:
+        // https://www.desmos.com/calculator/fvx3bqzlzi
+
         var thingsToSpawn = new List<BunnySpawnZone.SpawnInstruction>();
 
         var numBunnies = 12 + WaveNum;
-        var totalSpawnDuration = 9 + Mathf.Log(WaveNum / 10f + 1) * 10f;
+        var totalSpawnDuration = 9 + Mathf.Log(WaveNum / 10f + 1) * 7f;
         var bunnySpawnInterval = totalSpawnDuration / numBunnies;
 
         var bunnyPool = new WeightedPool<GameObject>();
@@ -93,16 +96,24 @@ public class GameManager : MonoBehaviour
             Resources.Load<GameObject>(Constants.Resources.BUNNY_REGULAR_PREFAB)
         );
         bunnyPool.Add(
-            weight: GraduallyIncreasingWeight(waveOffset: 0, logMultiplier: 5f, constantMultiplier: 0.05f),
+            weight: GraduallyIncreasingWeight(waveOffset: -1, logMultiplier: 2f, constantMultiplier: 0.04f),
             Resources.Load<GameObject>(Constants.Resources.BUNNY_ARMOURED_PREFAB)
         );
         bunnyPool.Add(
-            weight: GraduallyIncreasingWeight(waveOffset: -5, logMultiplier: 1f, constantMultiplier: 0.02f),
+            weight: GraduallyIncreasingWeight(waveOffset: -5, logMultiplier: 0.5f, constantMultiplier: 0.02f),
             Resources.Load<GameObject>(Constants.Resources.BUNNY_HEAVY_PREFAB)
         );
         bunnyPool.Add(
-            weight: GraduallyIncreasingWeight(waveOffset: 0, logMultiplier: 1f, constantMultiplier: 0.02f),
+            weight: GraduallyIncreasingWeight(waveOffset: -1, logMultiplier: 1f, constantMultiplier: 0.03f),
+            Resources.Load<GameObject>(Constants.Resources.BUNNY_NINJA_PREFAB)
+        );
+        bunnyPool.Add(
+            weight: GraduallyIncreasingWeight(waveOffset: -5, logMultiplier: 0.5f, constantMultiplier: 0.02f),
             Resources.Load<GameObject>(Constants.Resources.BUNNY_ROCKET_PREFAB)
+        );
+        bunnyPool.Add(
+            weight: GraduallyIncreasingWeight(waveOffset: -1, logMultiplier: 1f, constantMultiplier: 0.03f),
+            Resources.Load<GameObject>(Constants.Resources.BUNNY_POGO_PREFAB)
         );
 
         for (var i = 0; i != numBunnies; ++i)

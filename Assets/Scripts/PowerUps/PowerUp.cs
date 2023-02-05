@@ -63,9 +63,15 @@ public class PowerUp : MonoBehaviour, IPointerClickHandler
         StartCoroutine(EventuallySelfDestruct());
     }
 
-    void DoDestructionAnimation() =>
+    void DoDestructionAnimation()
+    {
+        var coll = GetComponent<Collider>();
+        if (coll != null)
+            Destroy(coll);
+
         _visuals.AddComponent<ScaleDownAndDestroy>()
             .Use(scaleDownTime: 0.5f, destroyTarget: _visuals, useScaledTime: false);
-    
+    }
+
     public enum TimeDurationType { GameTime, RealTime }
 }

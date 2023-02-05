@@ -5,6 +5,7 @@ public static class Constants
         public const string BUNNY_REGULAR_PREFAB = "Bunny Regular";
         public const string BUNNY_ARMOURED_PREFAB = "Bunny Regular Armoured";
         public const string BUNNY_HEAVY_PREFAB = "Bunny Heavy";
+        public const string BUNNY_NINJA_PREFAB = "Bunny Ninja";
         public const string BUNNY_POGO_PREFAB = "Bunny Pogo";
         public const string BUNNY_ROCKET_PREFAB = "Bunny Rocket";
         public const string CARROT_PREFAB = "Carrot";
