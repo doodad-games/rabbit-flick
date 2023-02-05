@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using MyLibrary;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Random = UnityEngine.Random;
@@ -12,6 +13,14 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         LookingForFood,
         Eating,
         Leaving,
+    }
+
+    [Serializable]
+    struct Sounds
+    {
+        public string FlickedSound;
+        public string FlickedArmourSound;
+        public string FlickedAwaySound;
     }
 
 
@@ -45,6 +54,8 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     [SerializeField] Animator _animator;
     [SerializeField] int _health = 1;
     [SerializeField] int _lowHealth = 1;
+    [SerializeField] bool _skipsEatingState;
+    [SerializeField] Sounds _sounds;
 
     Movement _movement;
     Carrot _targetCarrot;
@@ -99,17 +110,30 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void TakeFlick()
     {
+        var wasOnLowHealth = _health <= _lowHealth;
+
         _health -= FlickDamage;
+
+        var isOnLowHealth = _health <= _lowHealth;
+        var flickedAway = _health <= 0;
+
+        if (flickedAway && !string.IsNullOrEmpty(_sounds.FlickedAwaySound))
+            SoundController.Play(_sounds.FlickedAwaySound);
+        else if (isOnLowHealth && !string.IsNullOrEmpty(_sounds.FlickedArmourSound))
+            SoundController.Play(_sounds.FlickedArmourSound);
+        else if (!string.IsNullOrEmpty(_sounds.FlickedSound))
+            SoundController.Play(_sounds.FlickedSound);
+
         OnSomethingFlicked?.Invoke(this);
 
-        if (_health <= 0)
+        if (flickedAway)
         {
             _animator.SetTrigger(s_destroyed);
             OnFlicked?.Invoke();
             Destroy(_movement);
             Destroy(this);
         }
-        else if (_health <= _lowHealth)
+        else if (isOnLowHealth && !wasOnLowHealth)
             OnReachedLowLife?.Invoke();
     }
 
@@ -155,9 +179,15 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         IEnumerator EatCarrot()
         {
+            _targetCarrot.Destroy();
+            _targetCarrot = null;
+            SoundController.PlayAtLocation("Bunny Eat Carrot", transform.position);
+
+            if (_skipsEatingState)
+                yield break;
+
             _animator.SetBool(s_eating, true);
 
-            _targetCarrot.Destroy();
             _movement.enabled = false;
             _state = State.Eating;
 

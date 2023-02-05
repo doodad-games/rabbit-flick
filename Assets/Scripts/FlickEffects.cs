@@ -1,3 +1,4 @@
+using MyLibrary;
 using UnityEngine;
 
 public class FlickEffects : MonoBehaviour
@@ -15,7 +16,14 @@ public class FlickEffects : MonoBehaviour
         var emitParams = new ParticleSystem.EmitParams { position = bunny.transform.position };
 
         if (Bunny.FlickDamage == 1)
+        {
+            SoundController.Play("Regular Flick");
             _regularFlickParticles.Emit(emitParams, count: 3);
-        else _criticalFlickParticles.Emit(emitParams, count: 4);
+        }
+        else
+        {
+            SoundController.Play("Critical Flick");
+            _criticalFlickParticles.Emit(emitParams, count: 4);
+        }
     }
 }

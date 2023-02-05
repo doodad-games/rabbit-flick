@@ -194,6 +194,14 @@
       },
       "url": "https://packages.unity.com"
     },
+    "me.bilalakil.my-unity-library": {
+      "version": "file:C:/Users/Bilal/Dev/my-unity-library",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {
+        "com.unity.test-framework": "1.1.30"
+      }
+    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,

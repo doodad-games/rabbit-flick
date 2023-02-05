@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
 
 
     const int EXEC_ORDER = -100;
-    const float WAVE_TRANSITION_DURATION = 1f;
+    const float WAVE_TRANSITION_DURATION = 2f;
 
 
     public static event Action OnNewGameStarted;

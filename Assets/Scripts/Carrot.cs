@@ -1,4 +1,7 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using MyLibrary;
 using UnityEngine;
 
 public class Carrot : MonoBehaviour
@@ -20,13 +23,20 @@ public class Carrot : MonoBehaviour
 
     [SerializeField] GameObject _visuals;
 
+    bool _didStopLoopingSound;
+
     public void Awake() =>
         _visuals.AddComponent<ScaleUpAndShake>()
             .Use(
                 SCALE_UP_TIME,
                 SCALE_UP_TIME_VARIANCE,
                 SHAKE_RANDOM_POSITION_INTERVAL,
-                SHAKE_DISTANCE
+                SHAKE_DISTANCE,
+                finishedCallback: () =>
+                {
+                    SoundController.StopLooping("Carrot Growth Loop", fadeTime: 0.3f);
+                    _didStopLoopingSound = true;
+                }
             );
 
     public void OnEnable() =>
@@ -36,6 +46,15 @@ public class Carrot : MonoBehaviour
     {
         ++NumDestroyedThisWave;
         All.Remove(this);
+    }
+
+    public void Start() =>
+        SoundController.Loop("Carrot Growth Loop", fadeTime: 0.3f);
+
+    public void OnDestroy()
+    {
+        if (!_didStopLoopingSound)
+            SoundController.StopLooping("Carrot Growth Loop", fadeTime: 0.3f);
     }
 
     public void Destroy()

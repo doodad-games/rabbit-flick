@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using MyLibrary;
+using UnityEngine;
 using UnityEngine.Playables;
 
-public class FarmerTimelineController : MonoBehaviour
+public class TimelineController : MonoBehaviour
 {
     [SerializeReference] PlayableDirector _waveTransitionDirector;
     [SerializeReference] PlayableDirector _loseDirector;
@@ -19,6 +20,16 @@ public class FarmerTimelineController : MonoBehaviour
         GameManager.OnWaveCompleted -= HandleWaveTransition;
         GameManager.OnLoseGame -= HandleLoseGame;
     }
+
+    public void PlayFarmerWaveCompleteSound() =>
+        SoundController.Play(
+            Carrot.NumDestroyedThisWave < 3
+                ? "Farmer Happy Grunts"
+                : "Farmer Displeased Grunts"
+        );
+
+    public void PlaySound(string soundName) =>
+        SoundController.Play(soundName);
 
     void HandleWaveTransition() =>
         _waveTransitionDirector.Play();

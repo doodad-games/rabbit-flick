@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using MyLibrary;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -21,10 +22,15 @@ public class PowerUp : MonoBehaviour, IPointerClickHandler
     public void OnDisable() =>
         GameManager.OnLoseGame -= DestroyPowerUp;
 
+    public void Start() =>
+        SoundController.Play("Power Up Dropped");
+
     public void OnPointerClick(PointerEventData eventData)
     {
         if (!enabled)
             return;
+
+        SoundController.Play("Power Up Activated");
         StartCoroutine(ActivatePowerUp());
     }
 

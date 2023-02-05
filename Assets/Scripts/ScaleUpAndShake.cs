@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class ScaleUpAndShake : MonoBehaviour
 {
@@ -7,7 +9,8 @@ public class ScaleUpAndShake : MonoBehaviour
         float baseScaleUpTime,
         float scaleUpTimeVariance,
         float shakeRandomPositionInterval,
-        float shakeDistance
+        float shakeDistance,
+        Action finishedCallback = null
     )
     {
         StartCoroutine(ScaleUpAndShake());
@@ -40,6 +43,8 @@ public class ScaleUpAndShake : MonoBehaviour
 
             tfm.localPosition = Vector3.zero;
             tfm.localScale = Vector3.one;
+
+            finishedCallback?.Invoke();
         }
     }
 }
