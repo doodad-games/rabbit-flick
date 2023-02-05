@@ -164,7 +164,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator ShowTitleSoon()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(3f);
 
         if (CurState != State.Menu)
             yield break;

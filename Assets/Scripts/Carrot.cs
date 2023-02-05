@@ -14,11 +14,14 @@ public class Carrot : MonoBehaviour
 
 
     public static readonly List<Carrot> All = new();
-    public static int NumDestroyedThisWave { get; private set; }
+    public static int NumDestroyedThisWave;
 
     [RuntimeInitializeOnLoadMethod]
-    public static void HandleWaveChanged() =>
+    public static void ResetNumDestroyedThisWave()
+    {
+        NumDestroyedThisWave = 0;
         GameManager.OnWaveStarted += () => NumDestroyedThisWave = 0;
+    }
 
 
     [SerializeField] GameObject _visuals;

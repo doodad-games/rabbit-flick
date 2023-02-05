@@ -23,5 +23,6 @@ public class CarrotTitle : MonoBehaviour
     {
         foreach (var carrot in GetComponentsInChildren<Carrot>())
             carrot.Destroy();
+        Carrot.NumDestroyedThisWave = 0;
     }
 }
