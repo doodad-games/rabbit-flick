@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace DefaultNamespace
@@ -15,19 +12,19 @@ namespace DefaultNamespace
         [SerializeField] GameObject ExplosionEffect;
         [SerializeField] GameObject CarrotMeshRotaionPoint;
         [SerializeField] float meshRotationDegreesPerSecond =20;
-        bool rotatingMesh;
+        bool _rotatingMesh;
 
         void Awake()
         {
             Assert.IsNotNull(ExplosionEffect);
             Assert.IsNotNull(CarrotMeshRotaionPoint);
-            rotatingMesh = true;
+            _rotatingMesh = true;
             ExplosionEffect.SetActive(false);
         }
 
         void Update()
         {
-            if (rotatingMesh)
+            if (_rotatingMesh)
             {
                 transform.Rotate(new Vector3(0, meshRotationDegreesPerSecond, 0) * Time.deltaTime);
             }
@@ -35,7 +32,7 @@ namespace DefaultNamespace
 
         public void StartCarrotGrowthExplosion()
         {
-            rotatingMesh = false;
+            _rotatingMesh = false;
             ExplosionEffect.SetActive(true);
             Vector3 spawnLocation = transform.position;
             Quaternion spawnRoation = transform.rotation;
@@ -47,7 +44,9 @@ namespace DefaultNamespace
                 float randomX = Random.Range(-growthRadius, growthRadius);
                 float randomZ = Random.Range(-growthRadius, growthRadius);
                 Vector3 randomSpawnLocation = spawnLocation + new Vector3(randomX,0,randomZ);
-                Instantiate(carrotPrefab, randomSpawnLocation, spawnRoation);
+                Instantiate(carrotPrefab, randomSpawnLocation, spawnRoation)
+                    .GetComponent<Carrot>()
+                    .ShouldCountTowardsNumDestroyed = false;
             }
         }
     }

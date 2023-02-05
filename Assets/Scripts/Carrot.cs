@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using MyLibrary;
 using UnityEngine;
@@ -24,6 +22,8 @@ public class Carrot : MonoBehaviour
     }
 
 
+    [HideInInspector] public bool ShouldCountTowardsNumDestroyed = true;
+
     [SerializeField] GameObject _visuals;
 
     bool _didStopLoopingSound;
@@ -47,7 +47,9 @@ public class Carrot : MonoBehaviour
 
     public void OnDisable()
     {
-        ++NumDestroyedThisWave;
+        if (ShouldCountTowardsNumDestroyed)
+            ++NumDestroyedThisWave;
+
         All.Remove(this);
     }
 

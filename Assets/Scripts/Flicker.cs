@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 public class Flicker : MonoBehaviour
 {
-    const float FLICK_INTERVAL = 0.25f;
+    const float FLICK_INTERVAL = 0.2f;
 
 
     bool _isFlicking;

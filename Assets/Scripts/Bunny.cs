@@ -24,7 +24,8 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
 
 
-    const float DISTANCE_THRESHOLD_SQ = 0.001f;
+    public const float EAT_DISTANCE_THRESHOLD_SQ = 0.001f;
+
     const float RANDOM_CARROT_CHANCE = 0.5f;
     const float EAT_DURATION = 2f;
 
@@ -183,7 +184,7 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     void TryToEatCarrot()
     {
         var carrotPositionDelta = _targetCarrot.transform.position - transform.position;
-        if (Vector3.SqrMagnitude(carrotPositionDelta) > DISTANCE_THRESHOLD_SQ)
+        if (Vector3.SqrMagnitude(carrotPositionDelta) > EAT_DISTANCE_THRESHOLD_SQ)
             return;
 
         StartCoroutine(EatCarrot());
@@ -229,7 +230,7 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     void SelfDestructIfFinishedLeaving()
     {
         var targetDelta = _movement.Target - transform.position;
-        if (Vector3.SqrMagnitude(targetDelta) > DISTANCE_THRESHOLD_SQ)
+        if (Vector3.SqrMagnitude(targetDelta) > EAT_DISTANCE_THRESHOLD_SQ)
             return;
 
         Destroy(gameObject);
