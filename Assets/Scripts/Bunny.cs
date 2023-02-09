@@ -29,11 +29,12 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     const float RANDOM_CARROT_CHANCE = 0.5f;
     const float EAT_DURATION = 2f;
 
-    public static event Action OnHoveredBunnyChanged;
+    public static event Action<Bunny> OnHoveredOverBunny;
     public static event Action<Bunny> OnSomethingFlicked;
 
     public static readonly HashSet<Bunny> All = new();
-    public static Bunny CurrentlyHovered { get; private set; }
+    static readonly HashSet<Bunny> s_currentlyHovered = new();
+    public static IReadOnlyCollection<Bunny> CurrentlyHovered => s_currentlyHovered;
 
     public static int FlickDamage = 1;
     [RuntimeInitializeOnLoadMethod]
@@ -42,12 +43,6 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     static readonly int s_destroyed = Animator.StringToHash("Destroyed");
     static readonly int s_eating = Animator.StringToHash("Eating");
-
-    static void SetHoveredBunny(Bunny bunny)
-    {
-        CurrentlyHovered = bunny;
-        OnHoveredBunnyChanged?.Invoke();
-    }
 
     public event Action OnReachedLowLife;
     public event Action OnFlicked;
@@ -92,8 +87,7 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         GameManager.OnLoseGame -= StartLeaving;
 
-        if (CurrentlyHovered == this)
-            SetHoveredBunny(null);
+        s_currentlyHovered.Remove(this);
     }
 
     public void Update()
@@ -110,14 +104,14 @@ public class Bunny : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             SelfDestructIfFinishedLeaving();
     }
 
-    public void OnPointerEnter(PointerEventData eventData) =>
-        SetHoveredBunny(this);
-
-    public void OnPointerExit(PointerEventData eventData)
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        if (CurrentlyHovered == this)
-            SetHoveredBunny(null);
+        if (s_currentlyHovered.Add(this))
+            OnHoveredOverBunny?.Invoke(this);
     }
+
+    public void OnPointerExit(PointerEventData eventData) =>
+        s_currentlyHovered.Remove(this);
 
     public void TakeFlick()
     {
