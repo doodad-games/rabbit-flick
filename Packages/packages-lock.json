@@ -201,13 +201,13 @@
       "url": "https://packages.unity.com"
     },
     "me.bilalakil.my-unity-library": {
-      "version": "https://github.com/bilalakil/my-unity-library.git#5b3c2ce56630a0ae13953981dbfe99896196f8d9",
+      "version": "https://github.com/bilalakil/my-unity-library.git",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.unity.test-framework": "1.1.30"
       },
-      "hash": "5b3c2ce56630a0ae13953981dbfe99896196f8d9"
+      "hash": "f0c6d017b79148aa85b169c9917c2243d1ce15c1"
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",

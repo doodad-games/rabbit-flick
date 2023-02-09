@@ -13,7 +13,7 @@
     "com.unity.timeline": "1.6.4",
     "com.unity.ugui": "1.0.0",
     "com.unity.visualscripting": "1.8.0",
-    "me.bilalakil.my-unity-library": "https://github.com/bilalakil/my-unity-library.git#5b3c2ce56630a0ae13953981dbfe99896196f8d9",
+    "me.bilalakil.my-unity-library": "https://github.com/bilalakil/my-unity-library.git",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
