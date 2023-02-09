@@ -12,9 +12,9 @@ public class Flicker : MonoBehaviour
 
 
     public void OnEnable() =>
-        Bunny.OnHoveredOverBunny += HandleHoveredBunnyChanged;
+        Bunny.OnHoveredBunnyChanged += HandleHoveredBunnyChanged;
     public void OnDisable() =>
-        Bunny.OnHoveredOverBunny -= HandleHoveredBunnyChanged;
+        Bunny.OnHoveredBunnyChanged -= HandleHoveredBunnyChanged;
 
     public void Update()
     {
@@ -41,7 +41,7 @@ public class Flicker : MonoBehaviour
             StopFlicking();
     }
 
-    void HandleHoveredBunnyChanged(Bunny bunny)
+    void HandleHoveredBunnyChanged()
     {
         /*
         if (_isFlicking)
@@ -70,9 +70,6 @@ public class Flicker : MonoBehaviour
         _isFlicking = false;
     }
 
-    void Flick()
-    {
-        foreach (var bunny in Bunny.CurrentlyHovered)
-            bunny.TakeFlick();
-    }
+    void Flick() =>
+        Bunny.CurrentlyHovered?.TakeFlick();
 }
